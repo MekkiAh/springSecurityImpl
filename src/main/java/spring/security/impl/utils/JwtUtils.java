@@ -15,11 +15,11 @@ import java.util.Map;
 @Service
 public class JwtUtils {
     private static final long accessTokenValidity = 5 * 60 *60 ;
-    private static final long refreshTokenValidity = 5 * 60 *60 ;
+    //private static final long refreshTokenValidity = 5 * 60 *60 ;
 
 
     private static final String accessTokenPrivateKey="key9wi";
-    private static final String refreshTokenPrivateKey="key9wiEkher";
+   // private static final String refreshTokenPrivateKey="key9wiEkher";
     public String createAccessToken(Map<String, Object> claims, String subject){
             String encodedKey = Base64.getEncoder().encodeToString(accessTokenPrivateKey.getBytes());
             return Jwts.builder()
