@@ -14,20 +14,31 @@ import java.util.Map;
 
 @Service
 public class JwtUtils {
-    private static final long accessTokenValidity = 5 * 60 *60 ;
-    //private static final long refreshTokenValidity = 5 * 60 *60 ;
+    //5 minutes
+    private static final long accessTokenValidity = 5 *60 * 1000;
+    //1 year
+    private static final long refreshTokenValidity = 12 * 30 * 24 * 60 *60 *1000 ;
 
 
     private static final String accessTokenPrivateKey="key9wi";
-   // private static final String refreshTokenPrivateKey="key9wiEkher";
-    public String createAccessToken(Map<String, Object> claims, String subject){
-            String encodedKey = Base64.getEncoder().encodeToString(accessTokenPrivateKey.getBytes());
-            return Jwts.builder()
-                    .setClaims(claims)
-                    .setSubject(subject)
-                    .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidity*1000))
-                    .signWith(SignatureAlgorithm.HS512, encodedKey).compact();
+    private static final String refreshTokenPrivateKey="key9wi";
+   public String createAccessToken(Map<String, Object> claims, String subject){
+       String encodedKey = Base64.getEncoder().encodeToString(accessTokenPrivateKey.getBytes());
+       return Jwts.builder()
+               .setClaims(claims)
+               .setSubject(subject)
+               .setIssuedAt(new Date(System.currentTimeMillis()))
+               .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidity))
+               .signWith(SignatureAlgorithm.HS512, encodedKey).compact();
+   }
+   public String createRefreshToken(Map<String, Object> claims, String subject){
+        String encodedKey = Base64.getEncoder().encodeToString(refreshTokenPrivateKey.getBytes());
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValidity))
+                .signWith(SignatureAlgorithm.HS512, encodedKey).compact();
     }
     public boolean tokenIsExpired(String token){
         Date expirationDate = getClaimsFromToken(token).getExpiration();
@@ -56,6 +67,7 @@ public class JwtUtils {
         }
         return claims;
     }
+
     public boolean tokenIsValid ( String token, UserDetails userDetails){
         final String userId = getUserIdFromToken(token);
         return (userId.equals(userDetails.getUsername()) && !tokenIsExpired(token));

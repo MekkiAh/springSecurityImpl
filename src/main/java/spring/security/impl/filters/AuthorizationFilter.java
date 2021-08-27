@@ -39,7 +39,6 @@ public class AuthorizationFilter  extends OncePerRequestFilter {
                 System.out.println("0 "+id);
 
                 UserDetails userDetails = new User(id,"",(Collection<? extends GrantedAuthority>) jwtUtils.getAuthoritiesFromToken(jwt));
-                System.out.println(userDetails);
                 if(jwtUtils.tokenIsValid(jwt,userDetails))
                 {
                     System.out.println("2");
@@ -52,7 +51,6 @@ public class AuthorizationFilter  extends OncePerRequestFilter {
             }
             catch (Exception e)
             {
-                System.out.println("3");
 
                 httpServletResponse.setHeader("error-message",e.getMessage());
                 httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
